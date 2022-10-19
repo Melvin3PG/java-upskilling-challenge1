@@ -1,0 +1,136 @@
+openapi: 3.0.3
+info:
+  title: Swagger Banking - OpenAPI 3.0
+  description: |-
+    This is banking Rest API
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: jaime.carcamo@3pillarglobal.com  
+  version: 1.0.11
+tags:
+  - name: user
+    description: Authentication service validation for username and password
+  - name: customer
+    description: Manage customer information
+paths:
+  /login/authentication:
+    get:
+      tags:
+        - user
+      summary: Login user into the system
+      description: Login user by username and passwordd
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The username of the user
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password of the user
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username or password
+        '401':
+          description: User not found
+  /customer:
+    post:
+      tags:
+        - customer
+      summary: Create a new customer
+      description: Create a new customer
+      operationId: addCustomer
+      requestBody:
+        description: Create a new customer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+        required: true
+      responses:
+        '200':
+          description: Succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    put:
+      tags:
+        - customer
+      summary: Update an existing customer
+      description: Update an existing customer
+      operationId: updateCustomer
+      requestBody: 
+        description: Update an existing customer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        username:
+          type: string
+          format: string
+          example: 'jaime.carcamo'
+        name:
+          type: string
+          format: string
+          example: 'Jaime'
+        lastName:
+          type: string
+          format: string
+          example: 'Carcamo'
+        lastSession:
+          type: string
+          format: date-time
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        customerName:
+          type: string
+          format: string
+        birthDate:
+          type: string
+          format: date-time
+        active:
+          type: string
+          format: boolean
+        atDate:
+          type: string
+          format: date-time
+        accounts:
+          type: array
+          items:
+            type: object
+            
+                
+                  
