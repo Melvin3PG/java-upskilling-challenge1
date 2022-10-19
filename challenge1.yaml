@@ -2,11 +2,11 @@ openapi: 3.0.3
 info:
   title: MyBank REST API
   description: |-
-    This is a Banking basic REST API, this API includes three domains, Security Domain, Customer Domain and Account Domain, its design its based on the Open Api Specification 3.0.
+    This is a **Banking REST API**, this API includes three domains, Security Domain, Customer Domain and Account Domain, its design it's based on the Open Api Specification 3.0.
   contact:
     email: aline.perez@3pillarglobal.com
   license:
-    name: MyBank
+    name: MyBank License
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.11
 servers:
@@ -22,40 +22,26 @@ paths:
 ### Security domain ###
   # Authentication service validation for username and password
   /login:
-    post:
+    get:
       tags:
         - security
       summary: Authentication service validation for username and password
       description: Login service with user and password
       operationId: login
-      #security:
-       # - BasicAuth: []
-      requestBody:
-        description: Data needed to authenticate a customer
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserInfo'
-        required: true
+      parameters:
+        - $ref: '#/components/parameters/username'
+        - $ref: '#/components/parameters/password'
       responses:
         '200':
-          description: Valid user and password
+          description:  Successful Login. Valid user and password
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OnLoginResponse'
+                $ref: '#/components/schemas/OnLoginSuccessResponse'
         '401':
-          description: User not found, not authorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/authenticationFailed'
         '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/5xxError'
 ### Customer domain ###
   # Creates a new customer
   /customer:
@@ -65,30 +51,28 @@ paths:
       summary: Resource in charge of customer creation
       description: Create a new customer
       operationId: createCustomer
+      security:
+      - BasicAuth: []
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Customer'
+        required: true
       responses:
         '201':
           description: The customer was created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OnCreationResponse'
+                $ref: '#/components/schemas/OnSuccessResponse'
+          links: 
+            getOrderById:
+              $ref: '#/components/links/getCustomerById'
         '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/400Error'
         '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/5xxError'
     # Modify a customer
     put:
       tags: 
@@ -96,30 +80,25 @@ paths:
       summary: Resource that modifies customer data
       description: Update customer details
       operationId: updateCustomer
+      security:
+      - BasicAuth: []
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Customer'
+        required: true
       responses:
-        '201':
+        '200':
           description: Customer was updated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OnSuccessResponse'
         '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/400Error'
         '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/5xxError'
   # Retreives a custumer by ID
   /customer/{customerId}:
     get:
@@ -128,14 +107,10 @@ paths:
       summary: Resource that retrieves a customer by ID
       description: Find customer by ID
       operationId: getCustomerById
+      security:
+      - BasicAuth: []
       parameters:
-        - name: customerId
-          in: path
-          description: Customer identifier
-          required: true
-          schema:
-            type: integer
-            format: int64
+        - $ref: '#/components/parameters/customerId'
       responses:
         '200':
           description: Customer was successfully retrieved
@@ -144,17 +119,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/OnQueryCustomerResponse'         
         '400':
-          description: Invalid ID supplied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/400Error'
         '404':
-          description: Customer not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'  
+          $ref: '#/components/responses/404Error'
     # Delete a customer by ID      
     delete:
       tags:
@@ -162,14 +129,10 @@ paths:
       summary: Resource that delete customer by ID
       description: Delete customer by ID
       operationId: deleteCustomer
+      security:
+      - BasicAuth: []
       parameters:
-        - name: customerId
-          in: path
-          description: Customer identifier
-          required: true
-          schema:
-            type: integer
-            format: int64
+        - $ref: '#/components/parameters/customerId'
       responses:
         '204':
           description: Customer was deleted successfully
@@ -178,17 +141,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/OnSuccessResponse'
         '400':
-          description: Invalid ID
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/400Error'
         '404':
-          description: Customer not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/404Error'
 ### Account domain ###
   # Create new account
   /account: 
@@ -198,6 +153,8 @@ paths:
       summary: Resource in charge of account creation
       description: Add a new account
       operationId: createAccount
+      security:
+      - BasicAuth: []
       requestBody:
         description: Create a new account for a client
         content:
@@ -211,19 +168,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OnCreationResponse'
+                $ref: '#/components/schemas/OnSuccessResponse'
+          links: 
+            getAccountByAccountNumber:
+              $ref: '#/components/links/getAccountByAccountNumber'
         '400':
-          description: Invalid request body
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/400Error'
         '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/5xxError'
   # Modify an account
     put:
       tags: 
@@ -231,30 +183,25 @@ paths:
       summary: Resource that modifies account data
       description: Update account details
       operationId: updateAccount
+      security:
+      - BasicAuth: []
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Account'
+        required: true
       responses:
-        '201':
+        '200':
           description: Account was updated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OnSuccessResponse'
         '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/400Error'
         '500':
-          description: Server error 
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/5xxError'
   # Retreives an account by aacount number
   /account/{accountNumber}:
     get:
@@ -263,15 +210,10 @@ paths:
       summary: Resource that retrieves an account by account number
       description: Find account by account number
       operationId: getAccountByAccountNumber
+      security:
+      - BasicAuth: []
       parameters:
-        - name: accountNumber
-          in: path
-          description: Account identifier
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 1856899
+        - $ref: '#/components/parameters/accountNumber'
       responses:
         '200':
           description: Account was successfully retrieved
@@ -280,17 +222,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/OnQueryAccountResponse'        
         '400':
-          description: Invalid account number supplied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/400Error'
         '404':
-          description: Account not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'  
+          $ref: '#/components/responses/404Error'  
     # Delete an account by account number   
     delete:
       tags:
@@ -298,14 +232,10 @@ paths:
       summary: Resource that delete account by account number
       description: Delete account by account number
       operationId: deleteAccount
+      security:
+      - BasicAuth: []
       parameters:
-        - name: accountNumber
-          in: path
-          description: Account identifier
-          required: true
-          schema:
-            type: integer
-            format: int64
+        - $ref: '#/components/parameters/accountNumber'
       responses:
         '204':
           description: Customer was deleted successfully
@@ -314,32 +244,53 @@ paths:
               schema:
                 $ref: '#/components/schemas/OnSuccessResponse'
         '400':
-          description: Invalid ID
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/400Error'
         '404':
-          description: Customer not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnErrorResponse'
+          $ref: '#/components/responses/404Error'
 components:
-  schemas:
-    # schema - User info
-    UserInfo:
-      type: object
-      properties:
-       username:
+### Parameters ###
+  parameters:
+    # user name parameter for login
+    username:
+      name: username
+      in: query
+      description: User name for login
+      required: true
+      schema:
         type: string
-        description: Username to login (customer number)
-        example: 4587965123548787965
-       password:
+        minLength: 10
+        example: A45TR67YZ0
+    # Login password
+    password:
+      name: password
+      in: query
+      description: Password needed for login
+      required: true
+      schema:
         type: string
         format: password
-        description: Password required to be able to login
-        example: 1#CDfr546#@
+        minLength: 10
+        example: #CDfr546#@
+    # Account number
+    accountNumber:
+      name: accountNumber
+      in: path
+      description: Account identifier
+      required: true
+      schema:
+        type: integer
+        format: int64
+    # Customer identifier
+    customerId:
+      name: customerId
+      in: path
+      description: Customer identifier
+      required: true
+      schema:
+        type: integer
+        format: int64
+### Schemas ###
+  schemas:
     # schema - Customer object
     Customer:
      type: object
@@ -398,26 +349,25 @@ components:
           example: C101
         messageDescription:
           type: string
-          example: Entity not found
+          example: Message Description
     # schema - 4xx && 5xx responses
     OnErrorResponse:
       description: Response returned when an error occurred
-      allOf:
-        - $ref: '#/components/schemas/GeneralResponse'
-        - type: object
-          properties:
-            objectId:
-              type: string
-              description: Error type
-              example: Connection error
-    # schema - creation resource responses
+      type: object
+      properties:
+        messageCode:
+          type: string
+          example: E144
+        messageDescription:
+          type: string
+          example: Error Message Description
+        errorType:
+          type: string
+          description: Error type for internal use
+          example: An specific error type
+    # schema - On success resource responses for Customer an Account domains
+    # Returns the obhect identifier
     OnSuccessResponse:
-      description: Response returned on success #the 3rd output is not define yet!!!!
-      allOf:
-        - $ref: '#/components/schemas/GeneralResponse'
-        - type: object
-    # schema - creation resource responses
-    OnCreationResponse:
       description: Response returned when an new object is created
       allOf:
         - $ref: '#/components/schemas/GeneralResponse'
@@ -436,21 +386,91 @@ components:
         - $ref: '#/components/schemas/Customer'
     # schema - Query resource response (Account)
     OnQueryAccountResponse:
-      description: Response returned when a customer is retrieved
+      description: Response returned when an account is retrieved
       allOf:
         - $ref: '#/components/schemas/GeneralResponse'
         - $ref: '#/components/schemas/Account'
     # schema - Login resource response
-    OnLoginResponse:
+    OnLoginSuccessResponse:
       description: Response returned when an user is logged in
-      allOf:
-        - $ref: '#/components/schemas/GeneralResponse'
-        - type: object
-          properties:
-            token:
-              description: Generated token
-              type: string
-              example: YRUt677gyTDGF=
+      type: object
+      properties:
+        messageCode:
+          type: string
+          example: S102
+        messageDescription:
+          type: string
+          example: Successful Login
+        lastLogin:
+          description: Last login date
+          type: string
+          format: date-time
+          example: 2022-09-21T17:32:28Z
+    # schema - Login error
+    OnLoginErrorResponse:
+      description: Response returned when an error occurred in Login
+      type: object
+      properties:
+        messageCode:
+          type: string
+          example: L107
+        messageDescription:
+          type: string
+          example: Authentication failed. Please check your username and password.
+        errorType:
+          type: string
+          description: Error type for internal use
+          example: Authentication failed. User not found.
+### Responses ###
+  responses:
+    # Successful Login
+    loginSuccess:
+        description:  Successful Login. Valid user and password
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnLoginSuccessResponse'
+    # Authentication failed
+    authenticationFailed:
+        description: Authentication failed
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnLoginErrorResponse'
+    # 500 response code
+    5xxError:
+        description: Server error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnErrorResponse'
+    # 400 response code
+    400Error:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OnErrorResponse'
+    # 404 response code
+    404Error:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OnErrorResponse'
+### Links ###
+  links:
+    getCustomerById:
+      description: The retrieved id serves as input for the get resource.
+      operationId: getCustomerById
+      parameters:
+        customerId: '$response.body#/objectId'
+    getAccountByAccountNumber:
+      description: The retrieved id serves as input for the get resource.
+      operationId: getCustomerById
+      parameters:
+        accountNumber: '$response.body#/objectId'
+### Security ###
   securitySchemes:
     BasicAuth:
       type: http
