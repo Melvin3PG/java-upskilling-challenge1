@@ -85,6 +85,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Customer'
+  /customer/{id}:
+    get:
+      tags: 
+        - customer
+      summary: Get customer by id
+      description: Get customer by id
+      operationId: getCustomer
+      parameters:
+        - name: id
+          in: query
+          description: Identifier of the customer
+          required: true
+          schema:
+            type: string
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              $ref: '#/components/schemas/Customer'
 components:
   schemas:
     User:
