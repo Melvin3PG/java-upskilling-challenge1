@@ -155,7 +155,7 @@ components:
           type: string
           format: date-time
         active:
-          type: string
+          type: boolean
           format: boolean
         atDate:
           type: string
@@ -164,6 +164,26 @@ components:
           type: array
           items:
             type: object
-            
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        accountNumber:
+          type: string
+          format: string
+        accountType:
+          type: string
+          enum: [SAVING, CHECKING]
+        balance:
+          type: number
+          format: number
+        overdrafts:
+          type: boolean
+          format: boolean
+        overdraftAmount:
+          type: number
+          format: number
                 
                   
