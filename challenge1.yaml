@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Swagger Petstore - OpenAPI 3.0
+  title: Swagger Banking API - OpenAPI 3.0
   description: |-
     This is a sample First Banking Rest API Server based on the OpenAPI 3.0 specification. 
     
@@ -15,7 +15,7 @@ externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
 servers:
-  - url: https://bank.rest.com/api/v3
+  - url: https://banking.restapi.com/api/v3
 tags:
   - name: security
     description: Authentication service validation for username and password
@@ -79,7 +79,7 @@ paths:
     get:
       tags:
         - customer
-      summary: Find customer by ID
+      summary: Find a customer by ID
       operationId: getCustomerById
       parameters:
         - name: custId
@@ -88,7 +88,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int64
+            format: int32
       responses:
         '200':
           description: successful operation
@@ -217,7 +217,7 @@ paths:
     delete:
       tags:
         - customer
-      summary: Delete customer by ID
+      summary: Delete a customer by ID
       operationId: deleteCustomer
       parameters:
         - name: custId
@@ -226,7 +226,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int64
+            format: int32
       responses:
         '201':
           description: successful operation
@@ -451,7 +451,12 @@ components:
           example: fehguy
         birthDate:
           type: string
-          example: '23/06/1990'
+          description: Birth date
+          example: '2017-01-01'
+          format: date
+          pattern: "YYYY-MM-DD"
+          minLength: 0
+          maxLength: 10
         active:
           type: boolean
           example: true
