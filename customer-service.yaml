@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Banking Customer Managenment API
   description: Customer managenment service for banking users 
-  version: 1.0
+  version: "1.0"
   contact:
     name: Octavio Quintero
     email: jesus.quintero@3pillarglobal.com
@@ -17,12 +17,12 @@ paths:
   /customers:
     post:
       tags:
-        -customer
+        - customer
       summary: Create a new customer
       description: Create a new customer
       operationId: createCustomer
       security:
-        -BasicAuth: []
+        - BasicAuth: []
       requestBody:
         $ref: "models.yaml#/components/requestBodies/CustomerBody"
       responses:
@@ -65,7 +65,7 @@ paths:
       security:
       - BasicAuth: []
       parameters:
-        $ref: "models.yaml#/components/parameters/CustomerId"
+        - $ref: "models.yaml#/components/parameters/CustomerId"
       requestBody:
         $ref: "models.yaml#/components/requestBodies/CustomerBody"
       responses:
@@ -89,7 +89,7 @@ paths:
       security:
       - BasicAuth: []
       parameters:
-        $ref: "models.yaml#/components/parameters/CustomerId"
+        - $ref: "models.yaml#/components/parameters/CustomerId"
       responses:
         '200': 
           $ref: "models.yaml#/components/responses/CustomerSuccessResponse"
@@ -111,7 +111,7 @@ paths:
       security:
       - BasicAuth: []
       parameters:
-        $ref: "models.yaml#/components/parameters/CustomerId"
+        - $ref: "models.yaml#/components/parameters/CustomerId"
       responses:
         '200': 
           $ref: "models.yaml#/components/responses/ResourceDeletedSuccessResponse"
