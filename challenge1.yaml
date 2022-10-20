@@ -1,0 +1,507 @@
+openapi: 3.0.3
+info:
+  title: Swagger Petstore - OpenAPI 3.0
+  description: |-
+    This is a sample First Banking Rest API Server based on the OpenAPI 3.0 specification. 
+    
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://bank.rest.com/api/v3
+tags:
+  - name: security
+    description: Authentication service validation for username and password
+  - name: customer
+    description:  Catalog to manage customer information
+  - name: account
+    description:  Catalog to manage account information
+paths:
+  /security/login:
+    get:
+      tags:
+        - security
+      summary: Logs user into the system
+      description: ''
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: false
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid username/password supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /customer/{custId}:
+    get:
+      tags:
+        - customer
+      summary: Find customer by ID
+      operationId: getCustomerById
+      parameters:
+        - name: custId
+          in: path
+          description: ID of customer that needs to be fetched
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          description: Invalid customer ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    post:
+      tags:
+        - customer
+      summary: Create customer
+      description: This can only be done by the logged in user.
+      operationId: createCustomer
+      parameters:
+        - name: custId
+          in: path
+          description: 'The customer ID that needs to be fetched.'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Created customer object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Customer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid account supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    put:
+      tags:
+        - customer
+      summary: Update customer
+      description: This can only be done by the logged in user.
+      operationId: updateCustomer
+      parameters:
+        - name: custId
+          in: path
+          description: Customer ID that need to be update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Update an existent customer in the bank
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Customer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid customer ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    delete:
+      tags:
+        - customer
+      summary: Delete customer by ID
+      operationId: deleteCustomer
+      parameters:
+        - name: custId
+          in: path
+          description: ID of the customer that needs to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid customer ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /account/{accountNum}:
+    get:
+      tags:
+        - account
+      summary: Get account by account number
+      description: ''
+      operationId: getAccountByaccountNum
+      parameters:
+        - name: accountNum
+          in: path
+          description: 'The account number that needs to be fetched.'
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '400':
+          description: Invalid account supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    post:
+      tags:
+        - account
+      summary: Create account
+      description: This can only be done by the logged in user.
+      operationId: createAccount
+      parameters:
+        - name: accountNum
+          in: path
+          description: 'The account number that needs to be fetched.'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Created account object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Account'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Account'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid account supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    put:
+      tags:
+        - account
+      summary: Update account
+      description: This can only be done by the logged in user.
+      operationId: updateAccount
+      parameters:
+        - name: accountNum
+          in: path
+          description: account number that need to be update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent account in the bank
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Account'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Account'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid account supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    delete:
+      tags:
+        - account
+      summary: Delete account
+      description: This can only be done by the logged in user.
+      operationId: deleteAccount
+      parameters:
+        - name: accountNum
+          in: path
+          description: The account number that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid account supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        custId:
+          type: integer
+          format: int32
+          example: 100000
+        custName:
+          type: string
+          example: fehguy
+        birthDate:
+          type: string
+          example: '23/06/1990'
+        active:
+          type: boolean
+          example: true
+        atDate:
+          type: boolean
+          example: true
+        accounts:
+          type: array
+          xml:
+            name: accounts
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/Account'
+      xml:
+        name: customer
+    Account:
+      type: object
+      properties:
+        accountNum:
+          type: string
+          example: CR59623656510101065
+          description: IBAN Account Number
+        accountType:
+          type: string
+          description: Saving or Checking account
+          enum:
+            - SAVING
+            - CHECKING
+        balance:
+          type: number
+          example: 1365.6
+        overdrafts:
+          type: boolean
+          example: false
+          description: The account can to have overdrafs
+        overdraftAmt:
+          type: number
+          example: 3658.8
+          description: Amount overdrafting
+      xml:
+        name: account
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: '##default'
