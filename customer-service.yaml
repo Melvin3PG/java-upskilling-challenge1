@@ -1,0 +1,125 @@
+openapi: 3.0.0
+info:
+  title: Banking Customer Managenment API
+  description: Customer managenment service for banking users 
+  version: 1.0
+  contact:
+    name: Octavio Quintero
+    email: jesus.quintero@3pillarglobal.com
+servers:
+  - url: https://banking.com/api/
+    description: Production server
+  - url: http://localhost:8080/api/
+    description: Local server
+
+paths:
+  #POST Create a new customer
+  /customers:
+    post:
+      tags:
+        -customer
+      summary: Create a new customer
+      description: Create a new customer
+      operationId: createCustomer
+      security:
+        -BasicAuth: []
+      requestBody:
+        $ref: "models.yaml#/components/requestBodies/CustomerBody"
+      responses:
+        '201':
+          $ref: "models.yaml#/components/responses/CustomerSuccessResponse"
+        '400':
+          $ref: "models.yaml#/components/responses/InvalidInputsResponse"  
+        '401':
+          $ref: "models.yaml#/components/responses/UnauthorizedResponse"  
+        '500':
+          $ref: "models.yaml#/components/responses/InternalServerErrorResponse"    
+  #GET Get all customers
+    get:
+      tags: 
+        - customer
+      summary: Returns all customers
+      description: Returns all customers
+      operationId: getCustomers
+      security:
+      - BasicAuth: []
+      responses:
+        '200': 
+          $ref: "models.yaml#/components/responses/AllCustomersResponse"
+        '400':
+          $ref: "models.yaml#/components/responses/InvalidInputsResponse"
+        '401':
+          $ref: "models.yaml#/components/responses/UnauthorizedResponse"
+        '404':
+          $ref: "models.yaml#/components/responses/NotFoundResourceResponse"
+        '500':
+          $ref: "models.yaml#/components/responses/InternalServerErrorResponse"  
+  #PUT Update a new customer
+  /customers/{customerId}:
+    put:
+      tags: 
+        - customer
+      summary: Update a customer
+      description: Update a customer
+      operationId: updateCustomer
+      security:
+      - BasicAuth: []
+      parameters:
+        $ref: "models.yaml#/components/parameters/CustomerId"
+      requestBody:
+        $ref: "models.yaml#/components/requestBodies/CustomerBody"
+      responses:
+        '200': 
+          $ref: "models.yaml#/components/responses/CustomerSuccessResponse"
+        '400':
+          $ref: "models.yaml#/components/responses/InvalidInputsResponse"
+        '401':
+          $ref: "models.yaml#/components/responses/UnauthorizedResponse"
+        '404':
+          $ref: "models.yaml#/components/responses/NotFoundResourceResponse"
+        '500':
+          $ref: "models.yaml#/components/responses/InternalServerErrorResponse"
+  #GET Get customer by ID
+    get:
+      tags: 
+        - customer
+      summary: Get a customer by id
+      description: Get a customer by id
+      operationId: getCustomerById
+      security:
+      - BasicAuth: []
+      parameters:
+        $ref: "models.yaml#/components/parameters/CustomerId"
+      responses:
+        '200': 
+          $ref: "models.yaml#/components/responses/CustomerSuccessResponse"
+        '400':
+          $ref: "models.yaml#/components/responses/InvalidInputsResponse"
+        '401':
+          $ref: "models.yaml#/components/responses/UnauthorizedResponse"
+        '404':
+          $ref: "models.yaml#/components/responses/NotFoundResourceResponse"
+        '500':
+          $ref: "models.yaml#/components/responses/InternalServerErrorResponse"
+  #DELETE Delete a customer
+    delete:
+      tags: 
+        - customer
+      summary: Delete a customer
+      description: Delete a customer
+      operationId: deleteCustomerById
+      security:
+      - BasicAuth: []
+      parameters:
+        $ref: "models.yaml#/components/parameters/CustomerId"
+      responses:
+        '200': 
+          $ref: "models.yaml#/components/responses/ResourceDeletedSuccessResponse"
+        '400':
+          $ref: "models.yaml#/components/responses/InvalidInputsResponse"
+        '401':
+          $ref: "models.yaml#/components/responses/UnauthorizedResponse"
+        '404':
+          $ref: "models.yaml#/components/responses/NotFoundResourceResponse"
+        '500':
+          $ref: "models.yaml#/components/responses/InternalServerErrorResponse"

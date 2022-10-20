@@ -1,0 +1,32 @@
+openapi: 3.0.0
+info:
+  title: Banking Authentication API
+  description: Authentication service for banking users
+  version: 1.0
+  contact:
+    name: Octavio Quintero
+    email: jesus.quintero@3pillarglobal.com
+servers:
+  - url: https://banking.com/api/auth
+    description: Production server
+  - url: http://localhost:8080/api/auth
+    description: Local server
+
+paths:
+  /login:
+    post:
+      tags:
+        - security
+      operationId: login
+      summary: Authentication service for registered users
+      requestBody:
+        $ref: "../models.yaml#/components/requestBodies/UserLoginBody"
+      responses:
+        "200":
+          $ref: "../models.yaml#/components/responses/AuthenticationSuccessResponse"
+        "400":
+          $ref: "../models.yaml#/components/responses/InvalidInputsResponse"
+        "401":
+          $ref: "../models.yaml#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "../models.yaml#/components/responses/InternalServerErrorResponse"
