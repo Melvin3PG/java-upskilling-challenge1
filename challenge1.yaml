@@ -66,6 +66,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Account'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
     put:
       tags:
         - account
@@ -86,6 +88,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Account'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
   /account/{id}:
     parameters:
       - in: path
@@ -106,6 +110,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Account'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
     delete:
       tags:
         - account
@@ -114,11 +122,11 @@ paths:
       operationId: deleteAccount
       responses:
         '204':
-          description: Account deleted
-        '404':
-          description: Account not found
+          $ref: '#/components/responses/Deleted'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /customer:
     post:
       tags:
@@ -140,6 +148,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Customer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
     put:
       tags:
         - customer
@@ -160,6 +170,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Customer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
   /customer/{id}:
     parameters: 
       - in: path
@@ -180,6 +192,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Customer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
     delete:
       tags:
         - customer
@@ -188,12 +204,31 @@ paths:
       operationId: deleteCustomer
       responses:
         '204':
-          description: Customer deleted
-        '404':
-          description: Customer not found
+          $ref: '#/components/responses/Deleted'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    Deleted:
+      description: Deleted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Deleted'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
     User:
       type: object
@@ -260,5 +295,25 @@ components:
         overdraftAmount:
           type: number
           format: number
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+    Deleted:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
                 
                   
