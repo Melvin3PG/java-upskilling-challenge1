@@ -1,0 +1,511 @@
+openapi: 3.0.3
+info:
+  title: Banking REST API
+  description: |-
+    This is a **Banking REST API**. This API includes three domains, Security Domain, Customer Domain and Account Domain.
+    Its design it's based on the Open Api Specification 3.0.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+- url: https://banking.example.net
+tags:
+- name: Banking REST API
+  description: Operations related to bankins systems
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+paths:
+### Account domain ###
+  # Create new account
+  /account: 
+    post:
+      tags: 
+        - Account Domain
+      summary: Operation for a new banking account creation
+      description: Add a new banking account
+      operationId: createAccount
+      parameters:
+        #- $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/ChannelId'
+        - $ref: '#/components/parameters/CountryCode'
+        - $ref: '#/components/parameters/ApplicationCode'
+        - $ref: '#/components/parameters/SpanId'
+        - $ref: '#/components/parameters/TraceId'
+        - $ref: '#/components/parameters/UserContext'
+        - $ref: '#/components/parameters/ApiVersion'
+        #- $ref: '#/components/parameters/SubChannelId'
+      requestBody:
+        description: Create a new banking account
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountObject'
+        required: true
+      responses:
+        '201':
+          description: Account was created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  # Retreives all account elemnents list
+    get:
+      tags:
+        - Account Domain
+      summary: Resource that retrieves an account by account number
+      description: Find account by account number
+      operationId: getAllAccounts
+      parameters:
+        #- $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/ChannelId'
+        - $ref: '#/components/parameters/CountryCode'
+        - $ref: '#/components/parameters/ApplicationCode'
+        - $ref: '#/components/parameters/SpanId'
+        - $ref: '#/components/parameters/TraceId'
+        - $ref: '#/components/parameters/UserContext'
+        - $ref: '#/components/parameters/ApiVersion'
+        #- $ref: '#/components/parameters/SubChannelId'
+      responses:
+        '200':
+          description: Account was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountListResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  # Retreives an account by aacount number
+  /account/{accountId}:
+    get:
+      tags:
+        - Account Domain
+      summary: Resource that retrieves an account by account number
+      description: Find account by account number
+      operationId: getAccountByAccountNumber
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+        #- $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/ChannelId'
+        - $ref: '#/components/parameters/CountryCode'
+        - $ref: '#/components/parameters/ApplicationCode'
+        - $ref: '#/components/parameters/SpanId'
+        - $ref: '#/components/parameters/TraceId'
+        - $ref: '#/components/parameters/UserContext'
+        - $ref: '#/components/parameters/ApiVersion'
+        #- $ref: '#/components/parameters/SubChannelId'
+      responses:
+        '200':
+          description: Account was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  # Modify an account
+    put:
+      tags: 
+        - Account Domain
+      summary: Resource that modifies account data
+      description: Update account details
+      operationId: updateAccount
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountObject'
+        required: true
+      responses:
+        '200':
+          description: Account was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  # Modify partially an account
+    patch:
+      tags: 
+        - Account Domain
+      summary: Resource that modifies partially some attributes of account data
+      description: Update partial account details
+      operationId: partialUpdateAccount
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountObject'
+        required: true
+      responses:
+        '200':
+          description: Account was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'          
+    # Delete an account by account number   
+    delete:
+      tags:
+        - Account Domain
+      summary: Resource that delete account by account number
+      description: Delete account by account number
+      operationId: deleteAccount
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      responses:
+        '200':
+          description: Account was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+components:
+  parameters:
+    Authorization:
+      name: Authorization
+      in: header
+      required: true
+      description: |
+        An API must require Authorization header in http request as a JSON Web Token (JWT) issued by Enterprise approved Oauth2 Authorization Server for service authentication.
+        The API client must use OAuth 2.0 Client Credentials Grant Type to request an Access Token as JWT from Enterprise approved Oauth2 Authorization Server and pass as Authorization header (please refer to OAuth2 - Client Credentials Flow).
+          For any API Header details, please refer: 
+      example: "eyJ0eXAiO...."
+      schema:
+        type: string
+
+    TraceId:
+      name: x-b3-traceid
+      in: header
+      required: false
+      description: |
+        Also known as a Correlation ID, is a unique identifier value that is attached to requests and messages that allow reference to a particular business transaction or event chain across multiple integration tiers.
+        x-b3-traceid header is automatically generated/passed through when Spring Cloud Sleuth is included as a dependency. Sleuth may be a transitive dependency of other library.
+        If project team needs to create trace id  their own , it has to be 16 digit hexadecimal number(64 bit, since digit in hexadecimal represents 4 bits) e.g. 71200de3d3f82a83.
+      example: "41200de3d3e82a81"
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 26
+
+    ChannelId:
+      name: x-channel-id
+      in: header
+      required: true
+      description: |
+        This is to identify the Channel which is making this request. Originating application is responsible for sending x-channel-id.
+        For example, if  application 1 makes call to application 2 and then application 2 makes a call to application 3, application 1 will populate and send the x-channel-id to application 2 and application 2 will propagate the same x-channel-id to application 3.
+      example: "Mobile"
+      schema:
+        type: string
+        enum: ["Mobile", "Online", "Web", "Batch"]
+        minLength: 1
+        maxLength: 15
+
+    SubChannelId:
+      name: sub-channel-id
+      in: header
+      required: false
+      description: |
+        This is to identify the Sub Channel which is making this request. Originating application is responsible for sending x-channel-id.
+        For example, if  application 1 makes call to application 2 and then application 2 makes a call to application 3, application 1 will populate and send the sub-channel-id to application 2 and application 2 will propagate the same x-channel-id to application 3.
+      example: "MobileBankinApp"
+      schema:
+        type: string
+        
+    CountryCode:
+      name: x-country-code
+      in: header
+      required: true
+      description: |
+        This header represents the country code of API client which is making the request.
+        ISO 3166 Alpha 2 Code (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) is enforced.
+      example: "CR"
+      schema:
+        type: string
+        minLength: 2
+        maxLength: 2
+
+    ApplicationCode:
+      name: x-appl-code
+      in: header
+      required: true
+      description: |
+        This is to identify the source Application code which is making this request.
+        Originating application is responsible for sending x-appl-code. For example, if  application 1 makes call to application 2 and then application 2 makes a call to application 3, application 1 will populate and send the x-appl-code to application 2 and application 2 will propagate the same x-appl-code to application 3.
+      example: "APP-Adroid-001"
+      schema:
+        type: string
+        minLength: 4
+        maxLength: 5
+
+    ApiVersion:
+      name: x-api-version
+      in: header
+      required: false
+      description: |
+        This is the runtime minor and path version of the API.
+        If major version of the API is released, then this major version digits need to be reconciled.
+      example: "x.1"
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 40
+
+    UserContext:
+      name: x-user-context
+      in: header
+      required: false
+      description: |
+        When there is requirement to pass additional user context attributes as optional headers when a service api is called. x-user-context is needed to be utilized to pass optional header attributes. This header must be a Base64 encoded JSON object for API Spec defined in OAS2 since OAS2 does not allow header parameter type as object. The below country specific optional headers will be accommodated here as JSON Object as shown below.
+        Object structure example of x-user-context -  { "sub-channel" : "Mobile IOS", "officer-id" : "456", "transit-id" : "556", teller-id" : "7464", "language" : "EN", " originating-ip-address":"122.122.12.11"} .
+        The below base64 encoded string for the above sample data, and the encoded string needs to be passed as x-user-context header instead of the JSON object:
+        eyAic3ViLWNoYW5uZWwiIDogIk1vYmlsZSBJT1MiLCAib2ZmaWNlci1pZCIgOiAiNDU2IiwgInRyYW5zaXQtaWQiIDogIjU1NiIsIHRlbGxlci1pZCIgOiAiNzQ2NCIsICJsYW5ndWFnZSIgOiAiRU4iLCAiIG9yaWdpbmF0aW5nLWlwLWFkZHJlc3MiOiIxMjIuMTIyLjEyLjExIn0=
+        OAS3 supports header parameter type as object, therefore x-user-context object should be passed directly as header without base64 encoding.
+      example: { "sub-channel" : "Mobile IOS", "officer-id" : "456", "transit-id" : "556", teller-id" : "7464", "language" : "EN", " originating-ip-address":"122.122.12.11"}
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 300
+
+    SpanId:
+      name: x-b3-spanid
+      in: header
+      required: false
+      description: |
+        This header represents root span id. The span represents a basic unit of work.  Span is the primary building block of a distributed trace, representing an individual unit of work done in a distributed system. Spans will contain “References” to other spans, which allows multiple Spans to be assembled into one complete Trace - a visualization of the life of a request as it moves through a distributed system.
+        The trace id (x-b3-traceid) contains a set of span ids, forming a tree-like structure. The trace id will remain the same as one micro service calls the next. Spans have parent-child relationships. This span id creates parent-child relationship with the child spans to generate a trace tree out of all the spans for a request. If project team needs to create span id their own, it has to be 16 digit hexadecimal number(64 bit, since digit in hexadecimal represents 4 bits) e.g. 71200de3d3f82a83.
+      example: "41200de3d3e82a81"
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 40
+    # user name parameter for login
+    username:
+      name: username
+      in: query
+      description: User name for login
+      required: true
+      schema:
+        type: string
+        minLength: 10
+        example: A45TR67YZ0
+    # Login password
+    password:
+      name: password
+      in: query
+      description: Password needed for login
+      required: true
+      schema:
+        type: string
+        format: password
+        minLength: 10
+        example: #CDfr546#@
+    # Account number
+    AccountId:
+      name: accountId
+      in: path
+      description: Account identifier
+      required: true
+      schema:
+        type: integer
+        format: int64
+    # Customer identifier
+    customerId:
+      name: customerId
+      in: path
+      description: Customer identifier
+      required: true
+      schema:
+        type: integer
+        format: int64
+  schemas:
+    AccountDetailResponse:
+      description: Contains a object storarage detail response
+      required:
+        - data
+        - notifications
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/AccountObject'
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    AccountListResponse:
+      description: Contains a object storarage detail response
+      required:
+        - data
+        - notifications
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountObject'
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    AccountObject:
+     type: object
+     properties:
+      accountNumber:
+       type: integer
+       format: int64
+       example: 2546132012563
+      accountType:
+       type: string
+       description: Account type (two options)
+       example: Saving
+       enum:
+        - saving
+        - checking
+      balance:
+       type: number
+       format: float
+       example: 15300.25
+      overdraftAllowed: 
+       type: boolean
+       description: Flag to show if account allows overdrafts 
+       example: true
+      overdraftAmount: 
+       type: number
+       format: float
+       example: 5633.99
+    Notification:
+      required:
+        - code
+        - uuid
+        - timestamp
+      type: object
+      properties:
+        category:
+          description: Category of this notification as a Http status
+          type: string
+          example: BAD_REQUEST
+        code:
+          description: Notification code. First character indicates severity (E,W,I).
+          type: string
+          example: E400ERROR001
+        message:
+          description: >-
+            Description of the error or information notification. Where the
+            response is 2xx, it's a notification with informational details about
+            this response.
+          type: string
+          example: Something is invalid
+        description:
+          description: Message which explains the notification.
+          type: string
+        fieldName:
+          description: Field name in request this notification is related to.
+          type: string
+        uuid:
+          description: Unique identifier for this notification
+          type: string
+          example: aadde-ddddee-eeeedd-eeeedd
+        timestamp:
+          description: Timestamp of the notification.
+          type: string
+          format: date-time
+          example: 2017-10-12T20:38:45.408Z
+        severity:
+          description: Severity of the notification (ERROR, WARNING, INFO, UNSPECIFIED)
+          type: string
+    EmptyDataResponse:
+      required:
+        - notifications
+      type: object
+      properties:
+        data:
+          type: string
+          example: null
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+  responses:
+    400BadRequest:
+      description: Indicates that the server could not understand the request. This is
+        not the same as 422 which indicates a validation error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EmptyDataResponse"
+    401Unauthorized:
+      description: Unauthorized.  This will be returned when no authentication
+        information is provided.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EmptyDataResponse"
+    403Forbidden:
+      description: The principal associated with the request does not have sufficient
+        rights to preform this operation on the requested resource.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EmptyDataResponse"
+    404NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EmptyDataResponse"
+    422UnprocessableEntity:
+      description: The request was syntactically correct but was not semantically
+        correct. Usually indicating a validation problem.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EmptyDataResponse"
+    500InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EmptyDataResponse"
