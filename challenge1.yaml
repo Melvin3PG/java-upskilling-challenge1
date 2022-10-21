@@ -1,459 +1,622 @@
-swagger: "2.0"
+openapi: 3.0.0
 info:
-  description: "This is a sample server banking server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters."
-  version: "1.0.0"
-  title: "Banking  API"
-  termsOfService: "http://swagger.io/terms/"
-  contact:
-    email: "apiteam@swagger.io"
-  license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "petstore.swagger.io"
-basePath: "/v2"
-tags:
-- name: "user"
-  description: "Operations about user"
-  externalDocs:
-    description: "Find out more about our store"
-    url: "http://swagger.io"
-schemes:
-- "https"
-- "http"
+  title: banking API
+  version: 1.0.0
+servers:
+- url: http://webservice_bankingapps.org
+  description: web service 
 paths:
-  /user:
-    post:
-      tags:
-      - "user"
-      summary: "Create user"
-      description: "This can only be done by the logged in user."
-      operationId: "createUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Created user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/createWithArray:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithArrayInput"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/createWithList:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithListInput"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/login:
+  /battle/{battleId}:
     get:
+      summary: Returns a battle by ID.
       tags:
-      - "user"
-      summary: "Logs user into the system"
-      description: ""
-      operationId: "loginUser"
-      produces:
-      - "application/xml"
-      - "application/json"
+        - battle
       parameters:
-      - name: "username"
-        in: "query"
-        description: "The user name for login"
+      - name: battleId
+        in: path
         required: true
-        type: "string"
-      - name: "password"
-        in: "query"
-        description: "The password for login in clear text"
-        required: true
-        type: "string"
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
-          description: "successful operation"
-          schema:
-            type: "string"
-          headers:
-            X-Rate-Limit:
-              type: "integer"
-              format: "int32"
-              description: "calls per hour allowed by the user"
-            X-Expires-After:
-              type: "string"
-              format: "date-time"
-              description: "date in UTC when token expires"
-        "400":
-          description: "Invalid username/password supplied"
-  /user/logout:
-    get:
-      tags:
-      - "user"
-      summary: "Logs out current logged in user session"
-      description: ""
-      operationId: "logoutUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters: []
-      responses:
-        default:
-          description: "successful operation"
-  /user/{username}:
-    get:
-      tags:
-      - "user"
-      summary: "Get user by user name"
-      description: ""
-      operationId: "getUserByName"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be fetched. Use user1 for testing. "
-        required: true
-        type: "string"
-      responses:
-        "200":
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/User"
-        "400":
-          description: "Invalid username supplied"
-        "404":
-          description: "User not found"
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Battle'
     put:
+      summary: Update battle information
       tags:
-      - "user"
-      summary: "Updated user"
-      description: "This can only be done by the logged in user."
-      operationId: "updateUser"
-      produces:
-      - "application/xml"
-      - "application/json"
+        - battle
       parameters:
-      - name: "username"
-        in: "path"
-        description: "name that need to be updated"
+      - name: battleId
+        in: path
         required: true
-        type: "string"
-      - in: "body"
-        name: "body"
-        description: "Updated user object"
-        required: true
+        style: simple
+        explode: false
         schema:
-          $ref: "#/definitions/User"
+          type: string
+      requestBody:
+        description: Book data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Battle'
+        required: true
       responses:
-        "400":
-          description: "Invalid user supplied"
-        "404":
-          description: "User not found"
+        "200":
+          description: OK
     delete:
+      summary: Delete a battle by ID.
       tags:
-      - "user"
-      summary: "Delete user"
-      description: "This can only be done by the logged in user."
-      operationId: "deleteUser"
-      produces:
-      - "application/xml"
-      - "application/json"
+        - battle
       parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be deleted"
+      - name: battleId
+        in: path
         required: true
-        type: "string"
-      responses:
-        "400":
-          description: "Invalid username supplied"
-        "404":
-          description: "User not found"
-  /login:
-    post:
-      tags:
-      - "login"
-      summary: "Add a new login"
-      description: ""
-      operationId: "addLogin"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Login object that needs to be added to the store"
-        required: true
+        style: simple
+        explode: false
         schema:
-          $ref: "#/definitions/Login"
+          type: string
       responses:
-        "405":
-          description: "Invalid input"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /customer:
+        "200":
+          description: OK
+  /battle/:
     post:
+      summary: Create a new battle
       tags:
-      - "customer"
-      summary: "Add a new customer"
-      description: ""
-      operationId: "addCustomer"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Customer object that needs to be added to the store"
+        - battle
+      requestBody:
+        description: battle data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Battle'
         required: true
-        schema:
-          $ref: "#/definitions/Customer"
       responses:
-        "405":
-          description: "Invalid input"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"      
+        "200":
+          description: OK
+  /login/{loginId}:
+    get:
+      summary: Returns a user by ID.
+      tags:
+        - login
+      parameters:
+      - name: loginId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Login'
     put:
+      summary: Update user information
       tags:
-      - "customer"
-      summary: "Update an existing customer"
-      description: ""
-      operationId: "updateCustomer"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/xml"
-      - "application/json"
+        - login
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Customer object that needs to be updated"
+      - name: loginId
+        in: path
         required: true
+        style: simple
+        explode: false
         schema:
-          $ref: "#/definitions/Customer"
+          type: string
+      requestBody:
+        description: Login data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
       responses:
-        "400":
-          description: "Invalid ID supplied"
-        "404":
-          description: "Customer not found"
-        "405":
-          description: "Validation exception"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"      
-securityDefinitions:
-  petstore_auth:
-    type: "oauth2"
-    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
-    flow: "implicit"
-    scopes:
-      write:pets: "modify pets in your account"
-      read:pets: "read your pets"
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
-definitions:
-  Customer:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      customerName:
-        type: "string"
-      birthDate:
-        type: "string"
-        format: "date-time"
-      status:
-        type: "string"
-        description: "Customer Status"
-        enum:
-        - "active"
-        - "inactive"
-      debtDate:
-        type: "boolean"
-        default: false
-    xml:
-      name: "Order"
-  Order:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      petId:
-        type: "integer"
-        format: "int64"
-      quantity:
-        type: "integer"
-        format: "int32"
-      shipDate:
-        type: "string"
-        format: "date-time"
-      status:
-        type: "string"
-        description: "Order Status"
-        enum:
-        - "placed"
-        - "approved"
-        - "delivered"
-      complete:
-        type: "boolean"
-        default: false
-    xml:
-      name: "Order"
-  Category:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Category"
-  User:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      username:
-        type: "string"
-      firstName:
-        type: "string"
-      lastName:
-        type: "string"
-      email:
-        type: "string"
-      password:
-        type: "string"
-      phone:
-        type: "string"
-      userStatus:
-        type: "integer"
-        format: "int32"
-        description: "User Status"
-    xml:
-      name: "User"
-  Login:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      password:
-        type: "string"
-    xml:
-      name: "Login"
-  Tag:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Tag"
-  Pet:
-    type: "object"
-    required:
-    - "name"
-    - "photoUrls"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      category:
-        $ref: "#/definitions/Category"
-      name:
-        type: "string"
-        example: "doggie"
-      photoUrls:
-        type: "array"
-        xml:
-          name: "photoUrl"
-          wrapped: true
-        items:
-          type: "string"
+        "200":
+          description: OK
+    delete:
+      summary: Delete a user by ID.
       tags:
-        type: "array"
-        xml:
-          name: "tag"
-          wrapped: true
-        items:
-          $ref: "#/definitions/Tag"
-      status:
-        type: "string"
-        description: "pet status in the store"
-        enum:
-        - "available"
-        - "pending"
-        - "sold"
-    xml:
-      name: "Pet"
-  ApiResponse:
-    type: "object"
-    properties:
-      code:
-        type: "integer"
-        format: "int32"
-      type:
-        type: "string"
-      message:
-        type: "string"
-externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+        - login
+      parameters:
+      - name: loginId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /login/:
+    post:
+      summary: Create a new user
+      tags:
+        - login
+      requestBody:
+        description: user data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      responses:
+        "200":
+          description: OK   
+  /login/{accountId}:
+    get:
+      summary: Returns a account by ID.
+      tags:
+        - account
+      parameters:
+      - name: accountId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+    put:
+      summary: Update account information
+      tags:
+        - account
+      parameters:
+      - name: accountId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Acccount data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: Delete a account by ID.
+      tags:
+        - account
+      parameters:
+      - name: accountId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /account/:
+    post:
+      summary: Create a new account
+      tags:
+        - account
+      requestBody:
+        description: account data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+        required: true
+      responses:
+        "200":
+          description: OK              
+  /customer/{customerId}:
+    get:
+      summary: Returns a customer by ID.
+      tags:
+        - customer
+      parameters:
+      - name: customerId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    put:
+      summary: Update customer information
+      tags:
+        - customer
+      parameters:
+      - name: customerId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Customer data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: Delete a customer by ID.
+      tags:
+        - customer
+      parameters:
+      - name: customerId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /customer/:
+    post:
+      summary: Create a new customer
+      tags:
+        - customer
+      requestBody:
+        description: customer data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+        required: true
+      responses:
+        "200":
+          description: OK                
+  /battle/{battleId}/house:
+    post:
+      summary: Create a house
+      parameters:
+      - name: battleId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Book data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Battle'
+        required: true
+      responses:
+        "200":
+          description: OK
+  /house/{houseId}:
+    get:
+      summary: Returns a house by ID.
+      parameters:
+      - name: houseId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/House'
+    put:
+      summary: Update house information
+      parameters:
+      - name: houseId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Book data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/House'
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: Delete a house by ID.
+      parameters:
+      - name: houseId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /house/:
+    post:
+      summary: Create a new book
+      requestBody:
+        description: Book data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/House'
+        required: true
+      responses:
+        "200":
+          description: OK
+  /character/{characterId}:
+    get:
+      summary: Returns a character by ID.
+      parameters:
+      - name: characterId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+    put:
+      summary: Update character information
+      parameters:
+      - name: characterId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Book data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Character'
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: Delete a character by ID.
+      parameters:
+      - name: characterId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /character/:
+    post:
+      summary: Create a new book
+      requestBody:
+        description: Book data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Character'
+        required: true
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    Battle:
+      type: object
+      properties:
+        battleId:
+          type: string
+        battleName:
+          type: string
+        attackerKing:
+          type: string
+        defenderking:
+          type: string
+        attackerHouse:
+          type: string
+        participateHouse:
+          type: string
+        battleType:
+          type: string
+        year:
+          type: string
+        location:
+          type: string
+        region:
+          type: string
+      example:
+        battleId: battle12
+        battleName: Battle of Winterfell
+        attackerKing: Balon/Euron Greyjoy
+        defenderking: Robb Stark
+        attackerHouse: Greyjoy
+        defenderHouse: Stark
+        battleType: ambush
+        year: 299
+        location: Winterfell
+        region: The North
+    Character:
+      type: object
+      properties:
+        characterId:
+          type: string
+        name:
+          type: string
+        title:
+          type: string
+        male:
+          type: string
+        culture:
+          type: string
+        mother:
+          type: string
+        father:
+          type: string
+        house:
+          type: string
+        age:
+          type: string
+      example:
+        characterId: character1651
+        name: Daenerys Targaryen
+        title: Andals
+        male: 0
+        culture: Valyrian
+        house: House Targaryen
+        age: 21
+    House:
+      type: object
+      properties:
+        houseId:
+          type: string
+        characterName:
+          type: string
+        houseName:
+          type: string
+        deathYear:
+          type: string
+        bookOfDeath:
+          type: string
+        gender:
+          type: string
+        nobility:
+          type: string
+        location:
+          type: string
+        battle:
+          type: array
+          items:
+            $ref: '#/components/schemas/Battle'
+        character:
+          type: array
+          items:
+            $ref: '#/components/schemas/Character'
+      example:
+        houseId: house107
+        characterName: Bran Stark
+        houseName: House Stark
+        gender: 1
+        nobility: 1
+        location: Winterfell
+        battle:
+        - battleId: battle12
+          battleName: Battle of Winterfell
+          attackerKing: Balon/Euron Greyjoy
+          defenderking: Robb Stark
+          attackerHouse: Greyjoy
+          defenderHouse: Stark
+          battleType: ambush
+          year: 299
+          location: Winterfell
+          region: The North
+        character:
+        - characterId: character1651
+          name: Daenerys Targaryen
+          title: Andals
+          male: 0
+          culture: Valyrian
+          house: House Targaryen
+          age: 21
+    Login:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        password:
+          type: "string"
+      xml:
+        name: "Login"
+      example:
+       id: 1
+       password: Nothing    
+    Customer:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        customerName:
+          type: "string"
+        birthDate:
+          type: "string"
+          format: "date-time"
+        status:
+          type: "string"
+          description: "Customer Status"
+          enum:
+          - "active"
+          - "inactive"
+        debtDate:
+          type: "boolean"
+          default: false   
+      xml:
+        name: "Customer" 
+    Account:
+      type: "object"
+      properties:
+        accountNumber:
+          type: "integer"
+          format: "int64"
+        accountType:
+          type: "string"
+          description: "Account Type"
+          enum:
+          - "saving"
+          - "checking"  
+        balance:
+          type: "number"
+          format: "float"
+        allowOverdraft:
+          type: "boolean"  
+        overdraft:
+          type: "number"
+          format: "float"
+      xml:
+        name: "Account"        
+        
+
