@@ -1,0 +1,326 @@
+openapi: 3.0.0
+info:
+  title: Banking Managenment API
+  description: Models definition for REST API
+  version: "1.0"
+  contact:
+    name: Octavio Quintero
+    email: jesus.quintero@3pillarglobal.com
+components:
+  #Object Models
+  schemas:
+    # Schema for an account
+    AccountSchema:
+      type: object
+      properties:
+        accountNumber:
+          type: integer
+          format: int64
+        accountType:
+          type: string
+          description: Account type 
+          enum:
+            - SAVING
+            - CHECKING
+        balance:
+          type: number
+          format: float
+        overdraftAllowed: 
+          type: boolean
+          description: Flag to show if account allows overdrafts 
+        overdraftAmount: 
+          type: number
+          format: float
+      example:
+        accountNumber: 1000000001
+        accountType: "SAVING"
+        balance: 1000.00
+        overdraftAllowed: false
+        overdraftAmount: 0.0
+    # Schema for a customer
+    CustomerSchema:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        active:
+          type: boolean
+        atDate:
+          type: boolean
+        accounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccountSchema"
+      required:
+          - customerName
+          - birthDate
+          - active
+          - atDate
+      example:
+        name: "Jose"
+        birthDate: "01/01/1980"
+        active: true
+        atDate: true
+    # Schema for an error object
+    ErrorSchema:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        messages:
+          type: object
+      required:
+        - code
+        - description
+        - messages
+      example:
+        code: "server:internal_server_error"
+        description: "Server error"
+        messages: { "error_key": "error_reason" }
+     # Schema for success response body
+    # Schema for success response body
+    BaseResponseSchema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+      required:
+        - success
+        - data
+      example:
+        success: true
+        data: {}
+    # Schema for error response body
+    ErrorResponseSchema:
+      allOf:
+        - $ref: "#/components/schemas/BaseResponseSchema"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/ErrorSchema"
+          required:
+            - data
+          example:
+            success: false
+            data:
+              code: "server:internal_code_server_error"
+              description: "Server error"
+              messages: { "error_key": "error_reason" }
+    # Schema for authentication token object
+    AuthenticationTokenSchema:
+      allOf:
+        - $ref: "#/components/schemas/BaseResponseSchema"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/AuthenticationTokenSchema"
+          required:
+            - data
+          example:
+            data:
+              object: "authentication_token"
+              user_id: "1"
+              authentication_token: "azJRj09l7jvR8KhTqUs3"
+  #Object Requests
+  requestBodies:
+    # User object for authentication
+    UserLoginBody:
+      description: Object with username and password for authentication
+      required: true
+      content:
+        'application/json':
+          schema:
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+            required:
+              - username
+              - password
+            example:
+              username: "octavio"
+              last_name: "password"
+    # Customer object for create (POST)  and update (PUT) endpoints
+    CustomerBody:
+      description: Customer object
+      required: true
+      content:
+        'application/json':
+          schema:
+            $ref: "#/components/schemas/CustomerSchema"
+    # Account object for create (POST)  and update (PUT) endpoints
+    AccountBody:
+      description: Account object
+      required: true
+      content:
+        'application/json':
+          schema:
+            $ref: "#/components/schemas/AccountSchema"
+  #Parameters used in URL        
+  parameters:
+    CustomerId:
+      name: customerId
+      in: path
+      description: Customer ID
+      required: true
+      schema:
+        type: integer
+        format: int64
+    AccountNumber:
+      name: accountNumber
+      in: path
+      description: Account number
+      required: true
+      schema:
+        type: integer
+        format: int64
+  #Response Models
+  responses:
+    #Custom Responses by scenario
+    AuthenticationSuccessResponse:
+      description: User logged in successfuly
+      content:
+        'application/json':
+            schema:
+              $ref: "#/components/schemas/AuthenticationTokenSchema"
+    CustomerSuccessResponse:
+      description: Response for customer created successfully
+      content:
+        'application/json':
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/BaseResponseSchema"
+              - type: object
+                properties:
+                  data: 
+                    $ref: "#/components/schemas/CustomerSchema"
+                required:
+                  - data
+                example:
+                  data:
+                    id: "10001"
+                    name: "Jose"
+                    birthDate: "01/01/1980"
+                    active: true
+                    atDate: true
+    AllCustomersResponse:
+      description: Response that returns all customers data
+      content:
+        'application/json':
+            schema:
+                allOf:
+                  - $ref: "#/components/schemas/BaseResponseSchema"
+                  - type: object
+                    properties:
+                      data: 
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/CustomerSchema"
+                    required:
+                      - data
+                    example:
+                      data: 
+                        - id: "10001"
+                          name: "Jose"
+                          birthDate: "01/01/1980"
+                          active: true
+                          atDate: true  
+                        - id: "10002"
+                          name: "Karla"
+                          birthDate: "01/01/1981"
+                          active: true
+                          atDate: true  
+    AccountSuccessResponse:
+      description: Response for account created successfully
+      content:
+        'application/json':
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/BaseResponseSchema"
+              - type: object
+                properties:
+                  data: 
+                    $ref: "#/components/schemas/AccountSchema"
+                required:
+                  - data
+                example:
+                  data:
+                    accountNumber: 1000000001
+                    accountType: "SAVING"
+                    balance: 1000.00
+                    overdraftAllowed: false
+                    overdraftAmount: 0.0
+    AllAccountsResponse:
+      description: Response that returns all customers data
+      content:
+        'application/json':
+          schema:
+              allOf:
+                - $ref: "#/components/schemas/BaseResponseSchema"
+                - type: object
+                  properties:
+                    data: 
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/AccountSchema"
+                  required:
+                    - data
+                  example:
+                    data: 
+                      - accountNumber: 1000000001
+                        accountType: "SAVING"
+                        balance: 1000.00
+                        overdraftAllowed: false
+                        overdraftAmount: 0.0 
+                      - accountNumber: 1000000002
+                        accountType: "CHECKING"
+                        balance: 5000.00
+                        overdraftAllowed: true
+                        overdraftAmount: 1000.0 
+    ResourceDeletedSuccessResponse:   
+      description: Resource deleted successfully
+      content:
+        'application/json':
+          schema:
+            $ref: "#/components/schemas/BaseResponseSchema"                                               
+    #Error Responses
+    NotFoundResourceResponse:
+      description: 404 - Not Found Resource
+      content:
+        'application/json':
+          schema:
+            $ref: "#/components/schemas/ErrorResponseSchema"
+    InternalServerErrorResponse:
+      description: 500 - Internal Server Error
+      content:
+        'application/json':
+          schema:
+            $ref: "#/components/schemas/ErrorResponseSchema"
+    UnauthorizedResponse:
+      description: 401 - Unauthorized
+      content:
+        'application/json':
+          schema:
+            $ref: "#/components/schemas/ErrorResponseSchema"
+    InvalidInputsResponse:
+      description: 400 - Bad Request 
+      content:
+        'application/json':
+          schema:
+            $ref: "#/components/schemas/ErrorResponseSchema"
+  #Security Object Models
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic

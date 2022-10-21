@@ -1,0 +1,125 @@
+openapi: 3.0.0
+info:
+  title: Banking Account Managenment API
+  description: Account managenment service for banking users 
+  version: "1.0"
+  contact:
+    name: Octavio Quintero
+    email: jesus.quintero@3pillarglobal.com
+servers:
+  - url: https://banking.com/api/
+    description: Production server
+  - url: http://localhost:8080/api/
+    description: Local server
+
+paths:
+  #POST Create a new account
+  /accounts:
+    post:
+      tags:
+        - account
+      summary: Create a new account
+      description: Create a new account
+      operationId: createAccount
+      security:
+        - BasicAuth: []
+      requestBody:
+        $ref: "models.yaml#/components/requestBodies/AccountBody"
+      responses:
+        '201':
+          $ref: "models.yaml#/components/responses/AccountSuccessResponse"
+        '400':
+          $ref: "models.yaml#/components/responses/InvalidInputsResponse"  
+        '401':
+          $ref: "models.yaml#/components/responses/UnauthorizedResponse"  
+        '500':
+          $ref: "models.yaml#/components/responses/InternalServerErrorResponse"    
+    #GET Get all accounts
+    get:
+      tags: 
+        - account
+      summary: Returns all accounts
+      description: Returns all accounts
+      operationId: getAllAccounts
+      security:
+      - BasicAuth: []
+      responses:
+        '200': 
+          $ref: "models.yaml#/components/responses/AllAccountsResponse"
+        '400':
+          $ref: "models.yaml#/components/responses/InvalidInputsResponse"
+        '401':
+          $ref: "models.yaml#/components/responses/UnauthorizedResponse"
+        '404':
+          $ref: "models.yaml#/components/responses/NotFoundResourceResponse"
+        '500':
+          $ref: "models.yaml#/components/responses/InternalServerErrorResponse"  
+  #PUT Update a existing account
+  /accounts/{accountNumber}:
+    put:
+      tags: 
+        - account
+      summary: Update a account
+      description: Update a account
+      operationId: updateAccount
+      security:
+      - BasicAuth: []
+      parameters:
+        - $ref: "models.yaml#/components/parameters/AccountNumber"
+      requestBody:
+        $ref: "models.yaml#/components/requestBodies/AccountBody"
+      responses:
+        '200': 
+          $ref: "models.yaml#/components/responses/AccountSuccessResponse"
+        '400':
+          $ref: "models.yaml#/components/responses/InvalidInputsResponse"
+        '401':
+          $ref: "models.yaml#/components/responses/UnauthorizedResponse"
+        '404':
+          $ref: "models.yaml#/components/responses/NotFoundResourceResponse"
+        '500':
+          $ref: "models.yaml#/components/responses/InternalServerErrorResponse"
+  #GET Get account by number
+    get:
+      tags: 
+        - account 
+      summary: Get a account by number
+      description: Get a account by number
+      operationId: getAccountByNumber
+      security:
+      - BasicAuth: []
+      parameters:
+        - $ref: "models.yaml#/components/parameters/AccountNumber"
+      responses:
+        '200': 
+          $ref: "models.yaml#/components/responses/AccountSuccessResponse"
+        '400':
+          $ref: "models.yaml#/components/responses/InvalidInputsResponse"
+        '401':
+          $ref: "models.yaml#/components/responses/UnauthorizedResponse"
+        '404':
+          $ref: "models.yaml#/components/responses/NotFoundResourceResponse"
+        '500':
+          $ref: "models.yaml#/components/responses/InternalServerErrorResponse"
+  #DELETE Delete a account
+    delete:
+      tags: 
+        - account
+      summary: Delete a account
+      description: Delete a account
+      operationId: deleteAccountByNumber
+      security:
+      - BasicAuth: []
+      parameters:
+        - $ref: "models.yaml#/components/parameters/AccountNumber"
+      responses:
+        '200': 
+          $ref: "models.yaml#/components/responses/ResourceDeletedSuccessResponse"
+        '400':
+          $ref: "models.yaml#/components/responses/InvalidInputsResponse"
+        '401':
+          $ref: "models.yaml#/components/responses/UnauthorizedResponse"
+        '404':
+          $ref: "models.yaml#/components/responses/NotFoundResourceResponse"
+        '500':
+          $ref: "models.yaml#/components/responses/InternalServerErrorResponse"
