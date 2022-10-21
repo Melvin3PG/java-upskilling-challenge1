@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Banking Managenment API
   description: Models definition for REST API
-  version: 1.0
+  version: "1.0"
   contact:
     name: Octavio Quintero
     email: jesus.quintero@3pillarglobal.com
@@ -58,10 +58,10 @@ components:
           items:
             $ref: "#/components/schemas/AccountSchema"
       required:
-          -customerName
-          -birthDate
-          -active
-          -atDate
+          - customerName
+          - birthDate
+          - active
+          - atDate
       example:
         name: "Jose"
         birthDate: "01/01/1980"
@@ -123,7 +123,6 @@ components:
         - type: object
           properties:
             data:
-              type: object
               $ref: "#/components/schemas/AuthenticationTokenSchema"
           required:
             - data
@@ -165,9 +164,9 @@ components:
       description: Account object
       required: true
       content:
-      'application/json':
-        schema:
-          $ref: "#/components/schemas/AccountSchema"
+        'application/json':
+          schema:
+            $ref: "#/components/schemas/AccountSchema"
   #Parameters used in URL        
   parameters:
     CustomerId:
@@ -205,7 +204,6 @@ components:
               - type: object
                 properties:
                   data: 
-                    type: object
                     $ref: "#/components/schemas/CustomerSchema"
                 required:
                   - data
@@ -253,7 +251,6 @@ components:
               - type: object
                 properties:
                   data: 
-                    type: object
                     $ref: "#/components/schemas/AccountSchema"
                 required:
                   - data
@@ -294,7 +291,7 @@ components:
     ResourceDeletedSuccessResponse:   
       description: Resource deleted successfully
       content:
-      'application/json':
+        'application/json':
           schema:
             $ref: "#/components/schemas/BaseResponseSchema"                                               
     #Error Responses
