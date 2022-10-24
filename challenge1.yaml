@@ -19,49 +19,28 @@ servers:
 tags:
   - name: security
     description: Authentication service validation for username and password
-  - name: customer
+  - name: customers
     description:  Catalog to manage customer information
-  - name: account
+  - name: accounts
     description:  Catalog to manage account information
 paths:
   /security/login:
-    get:
+    post:
       tags:
         - security
       summary: Logs user into the system
       description: ''
       operationId: loginUser
-      parameters:
-        - name: username
-          in: query
-          description: The user name for login
-          required: false
-          schema:
-            type: string
-        - name: password
-          in: query
-          description: The password for login in clear text
-          required: false
-          schema:
-            type: string
+      requestBody:
+        description: Created customer object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
       responses:
         '200':
           description: successful operation
-          headers:
-            X-Rate-Limit:
-              description: calls per hour allowed by the user
-              schema:
-                type: integer
-                format: int32
-            X-Expires-After:
-              description: date in UTC when token expires
-              schema:
-                type: string
-                format: date-time
           content:
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
@@ -70,15 +49,52 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-
-  /customer/{custId}:
+                $ref: '#/components/schemas/ApiResponse'   
+  /customers:
     get:
       tags:
-        - customer
+        - customers
+      summary: Retrieve complete customer
+      operationId: getCustomerList
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+    post:
+      tags:
+        - customers
+      summary: Create customer
+      description: This can only be done by the logged in user.
+      operationId: createCustomer
+      requestBody:
+        description: Created customer object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'          
+        '400':
+          description: Invalid account supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'  
+
+  /customers/{custId}:
+    get:
+      tags:
+        - customers
       summary: Find a customer by ID
       operationId: getCustomerById
       parameters:
@@ -96,74 +112,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Customer'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Customer'
         '400':
           description: Invalid customer ID supplied
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
         '404':
           description: Customer not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-    post:
-      tags:
-        - customer
-      summary: Create customer
-      description: This can only be done by the logged in user.
-      operationId: createCustomer
-      parameters:
-        - name: custId
-          in: path
-          description: 'The customer ID that needs to be fetched.'
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        description: Created customer object
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Customer'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Customer'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Customer'
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-        '400':
-          description: Invalid account supplied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/ApiResponse'                  
     put:
       tags:
-        - customer
+        - customers
       summary: Update customer
       description: This can only be done by the logged in user.
       operationId: updateCustomer
@@ -180,43 +143,28 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Customer'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Customer'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Customer'
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/Customer'          
         '400':
           description: Invalid customer ID supplied
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
         '404':
           description: Customer not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
     delete:
       tags:
-        - customer
+        - customers
       summary: Delete a customer by ID
       operationId: deleteCustomer
       parameters:
@@ -234,32 +182,65 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
         '400':
           description: Invalid customer ID supplied
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
         '404':
           description: Customer not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/ApiResponse'  
 
-  /account/{accountNum}:
+  /accounts:
     get:
       tags:
-        - account
+        - accounts
+      summary: Retrieve complete account list 
+      description: '' 
+      operationId: getAccountList
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account'   
+    post:
+      tags:
+        - accounts
+      summary: Create account
+      description: This can only be done by the logged in user.
+      operationId: createAccount
+      requestBody:
+        description: Created account object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'          
+        '400':
+          description: Invalid account supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'   
+
+  /accounts/{accountNum}:
+    get:
+      tags:
+        - accounts
       summary: Get account by account number
       description: ''
       operationId: getAccountByaccountNum
@@ -278,74 +259,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Account'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Account'
         '400':
           description: Invalid account supplied
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
         '404':
           description: Account not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-    post:
-      tags:
-        - account
-      summary: Create account
-      description: This can only be done by the logged in user.
-      operationId: createAccount
-      parameters:
-        - name: accountNum
-          in: path
-          description: 'The account number that needs to be fetched.'
-          required: true
-          schema:
-            type: string
-      requestBody:
-        description: Created account object
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Account'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Account'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Account'
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-        '400':
-          description: Invalid account supplied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/ApiResponse'                    
     put:
       tags:
-        - account
+        - accounts
       summary: Update account
       description: This can only be done by the logged in user.
       operationId: updateAccount
@@ -362,43 +290,28 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Account'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Account'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Account'
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/Account'          
         '400':
           description: Invalid account supplied
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
         '404':
           description: Account not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
     delete:
       tags:
-        - account
+        - accounts
       summary: Delete account
       description: This can only be done by the logged in user.
       operationId: deleteAccount
@@ -416,27 +329,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
         '400':
           description: Invalid account supplied
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
         '404':
           description: Account not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
 components:
   schemas:
     Customer:
@@ -465,13 +369,8 @@ components:
           example: true
         accounts:
           type: array
-          xml:
-            name: accounts
-            wrapped: true
           items:
             $ref: '#/components/schemas/Account'
-      xml:
-        name: customer
     Account:
       type: object
       properties:
@@ -496,8 +395,13 @@ components:
           type: number
           example: 3658.8
           description: Amount overdrafting
-      xml:
-        name: account
+    Login:
+      type: object
+      properties:
+        user: 
+          type: string
+        password: 
+          type: string
     ApiResponse:
       type: object
       properties:
@@ -508,5 +412,3 @@ components:
           type: string
         message:
           type: string
-      xml:
-        name: '##default'
