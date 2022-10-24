@@ -32,7 +32,7 @@ paths:
       description: ''
       operationId: loginUser
       requestBody:
-        description: Created customer object
+        description: Login to the system
         content:
           application/json:
             schema:
@@ -43,18 +43,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/LoginResponse' 
         '400':
           description: Invalid username/password supplied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'   
+                $ref: '#/components/schemas/LoginResponse'   
   /customers:
     get:
       tags:
         - customers
-      summary: Retrieve complete customer
+      summary: Retrieve complete customer list
       operationId: getCustomerList
       responses:
         '200':
@@ -62,9 +62,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Customer'
+                $ref: '#/components/schemas/CustomerResponse'
+                
     post:
       tags:
         - customers
@@ -83,13 +82,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Customer'          
+                $ref: '#/components/schemas/CustomerResponse'          
         '400':
           description: Invalid account supplied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'  
+                $ref: '#/components/schemas/CustomerResponse'  
 
   /customers/{custId}:
     get:
@@ -111,19 +110,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Customer'          
+                $ref: '#/components/schemas/CustomerResponse'          
         '400':
           description: Invalid customer ID supplied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
+                $ref: '#/components/schemas/CustomerResponse'          
         '404':
           description: Customer not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'                  
+                $ref: '#/components/schemas/CustomerResponse'                  
     put:
       tags:
         - customers
@@ -149,19 +148,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Customer'          
+                $ref: '#/components/schemas/CustomerResponse'          
         '400':
           description: Invalid customer ID supplied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
+                $ref: '#/components/schemas/CustomerResponse'          
         '404':
           description: Customer not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
+                $ref: '#/components/schemas/CustomerResponse'          
     delete:
       tags:
         - customers
@@ -181,19 +180,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
+                $ref: '#/components/schemas/CustomerResponse'          
         '400':
           description: Invalid customer ID supplied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
+                $ref: '#/components/schemas/CustomerResponse'          
         '404':
           description: Customer not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'  
+                $ref: '#/components/schemas/CustomerResponse'  
 
   /accounts:
     get:
@@ -208,9 +207,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Account'   
+                $ref: '#/components/schemas/AccountResponse'   
     post:
       tags:
         - accounts
@@ -229,13 +226,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Account'          
+                $ref: '#/components/schemas/AccountResponse'          
         '400':
           description: Invalid account supplied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'   
+                $ref: '#/components/schemas/AccountResponse'   
 
   /accounts/{accountNum}:
     get:
@@ -258,19 +255,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Account'          
+                $ref: '#/components/schemas/AccountResponse'          
         '400':
           description: Invalid account supplied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
+                $ref: '#/components/schemas/AccountResponse'          
         '404':
           description: Account not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'                    
+                $ref: '#/components/schemas/AccountResponse'                    
     put:
       tags:
         - accounts
@@ -296,19 +293,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Account'          
+                $ref: '#/components/schemas/AccountResponse'          
         '400':
           description: Invalid account supplied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
+                $ref: '#/components/schemas/AccountResponse'          
         '404':
           description: Account not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
+                $ref: '#/components/schemas/AccountResponse'          
     delete:
       tags:
         - accounts
@@ -328,19 +325,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
+                $ref: '#/components/schemas/AccountResponse'          
         '400':
           description: Invalid account supplied
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
+                $ref: '#/components/schemas/AccountResponse'          
         '404':
           description: Account not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
+                $ref: '#/components/schemas/AccountResponse'  
+                        
 components:
   schemas:
     Customer:
@@ -371,6 +369,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Account'
+    
     Account:
       type: object
       properties:
@@ -395,6 +394,7 @@ components:
           type: number
           example: 3658.8
           description: Amount overdrafting
+    
     Login:
       type: object
       properties:
@@ -402,13 +402,56 @@ components:
           type: string
         password: 
           type: string
+    
+    User:
+      type: object
+      properties:
+        user:
+          type: string
+          example: ARUIZ1
+        name: 
+          type: string
+          example: Antonio
+        lastName: 
+          type: string
+          example: Ruiz
+    
+    LoginResponse:
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/ApiResponse'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    
+    CustomerResponse:
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/ApiResponse'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Customer'
+    
+    AccountResponse:
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/ApiResponse'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
+    
     ApiResponse:
       type: object
       properties:
         code:
           type: integer
           format: int32
-        type:
-          type: string
         message:
           type: string
+        
