@@ -12,42 +12,52 @@ info:
 servers:
   - url: https://mybank/api/v1
 tags:
-  - name: security
+  - name: login
     description: Authentication resources
-  - name: customer
+  - name: customers
     description: CRUD Catalog to manage customer information
-  - name: account
+  - name: accounts
     description: CRUD Catalog to manage account information
 paths:
 ### Security domain ###
   # Authentication service validation for username and password
   /login:
-    get:
+    post:
       tags:
-        - security
+        - login
       summary: Authentication service validation for username and password
       description: Login service with user and password
       operationId: login
-      parameters:
-        - $ref: '#/components/parameters/username'
-        - $ref: '#/components/parameters/password'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
       responses:
         '200':
           description:  Successful Login. Valid user and password
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OnLoginSuccessResponse'
+                allOf:
+                  - $ref: '#/components/schemas/GeneralResponse'
+                  - type: object
+                    properties:
+                      lastLogin:
+                        description: Last login
+                        type: string
+                        format: date
+                        example: 27-08-22
         '401':
-          $ref: '#/components/responses/authenticationFailed'
+          $ref: '#/components/responses/error'
         '500':
-          $ref: '#/components/responses/5xxError'
+          $ref: '#/components/responses/error'
 ### Customer domain ###
   # Creates a new customer
-  /customer:
+  /customers:
     post:
       tags:
-        - customer
+        - customers
       summary: Resource in charge of customer creation
       description: Create a new customer
       operationId: createCustomer
@@ -61,27 +71,40 @@ paths:
         required: true
       responses:
         '201':
-          description: The customer was created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnSuccessResponse'
-          links: 
-            getOrderById:
-              $ref: '#/components/links/getCustomerById'
+          $ref: '#/components/responses/customer'
         '400':
-          $ref: '#/components/responses/400Error'
+          $ref: '#/components/responses/error'
+          
         '500':
-          $ref: '#/components/responses/5xxError'
-    # Modify a customer
+          $ref: '#/components/responses/error'
+    get:
+      tags:
+        - customers
+      summary: Resource that retrieves all customers
+      description: Create a new customer
+      operationId: getAllCustumers
+      security:
+      - BasicAuth: []
+      responses:
+        '201':
+          $ref: '#/components/responses/customer'
+        '400':
+          $ref: '#/components/responses/error'
+        '500':
+          $ref: '#/components/responses/error'
+ 
+  /customers/{customerId}:
+  # Modify a customer
     put:
       tags: 
-        - customer
+        - customers
       summary: Resource that modifies customer data
       description: Update customer details
       operationId: updateCustomer
       security:
       - BasicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/customerId'
       requestBody:
         content:
           application/json:
@@ -90,20 +113,15 @@ paths:
         required: true
       responses:
         '200':
-          description: Customer was updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnSuccessResponse'
+          $ref: '#/components/responses/customer'
         '400':
-          $ref: '#/components/responses/400Error'
+          $ref: '#/components/responses/error'
         '500':
-          $ref: '#/components/responses/5xxError'
+          $ref: '#/components/responses/error'
   # Retreives a custumer by ID
-  /customer/{customerId}:
     get:
       tags:
-        - customer
+        - customers
       summary: Resource that retrieves a customer by ID
       description: Find customer by ID
       operationId: getCustomerById
@@ -113,19 +131,15 @@ paths:
         - $ref: '#/components/parameters/customerId'
       responses:
         '200':
-          description: Customer was successfully retrieved
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnQueryCustomerResponse'         
+          $ref: '#/components/responses/customer'
         '400':
-          $ref: '#/components/responses/400Error'
+          $ref: '#/components/responses/error'
         '404':
-          $ref: '#/components/responses/404Error'
+          $ref: '#/components/responses/error'
     # Delete a customer by ID      
     delete:
       tags:
-        - customer
+        - customers
       summary: Resource that delete customer by ID
       description: Delete customer by ID
       operationId: deleteCustomer
@@ -139,17 +153,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OnSuccessResponse'
+                $ref: '#/components/schemas/GeneralResponse'
         '400':
-          $ref: '#/components/responses/400Error'
+          $ref: '#/components/responses/error'
         '404':
-          $ref: '#/components/responses/404Error'
+          $ref: '#/components/responses/error'
 ### Account domain ###
   # Create new account
-  /account: 
+  /accounts: 
     post:
       tags: 
-        - account
+        - accounts
       summary: Resource in charge of account creation
       description: Add a new account
       operationId: createAccount
@@ -164,27 +178,39 @@ paths:
         required: true
       responses:
         '201':
-          description: Account was created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnSuccessResponse'
-          links: 
-            getAccountByAccountNumber:
-              $ref: '#/components/links/getAccountByAccountNumber'
+          $ref: '#/components/responses/account'
         '400':
-          $ref: '#/components/responses/400Error'
+          $ref: '#/components/responses/error'
         '500':
-          $ref: '#/components/responses/5xxError'
+          $ref: '#/components/responses/error'
+    # Get all accounts
+    get:
+      tags:
+        - accounts
+      summary: Resource that retrieves all accounts
+      description: Find all accounts
+      operationId: getAllAccounts
+      security:
+      - BasicAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/account'
+        '400':
+          $ref: '#/components/responses/error'
+        '404':
+          $ref: '#/components/responses/error' 
+  /accounts/{accountNumber}:
   # Modify an account
     put:
       tags: 
-        - account
+        - accounts
       summary: Resource that modifies account data
       description: Update account details
       operationId: updateAccount
       security:
       - BasicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/accountNumber'
       requestBody:
         content:
           application/json:
@@ -193,20 +219,15 @@ paths:
         required: true
       responses:
         '200':
-          description: Account was updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnSuccessResponse'
+          $ref: '#/components/responses/account'
         '400':
-          $ref: '#/components/responses/400Error'
+          $ref: '#/components/responses/error'
         '500':
-          $ref: '#/components/responses/5xxError'
-  # Retreives an account by aacount number
-  /account/{accountNumber}:
+          $ref: '#/components/responses/error'
+  # Retreives an account by account number
     get:
       tags:
-        - account
+        - accounts
       summary: Resource that retrieves an account by account number
       description: Find account by account number
       operationId: getAccountByAccountNumber
@@ -216,19 +237,15 @@ paths:
         - $ref: '#/components/parameters/accountNumber'
       responses:
         '200':
-          description: Account was successfully retrieved
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OnQueryAccountResponse'        
+          $ref: '#/components/responses/account'       
         '400':
-          $ref: '#/components/responses/400Error'
+          $ref: '#/components/responses/error'
         '404':
-          $ref: '#/components/responses/404Error'  
+          $ref: '#/components/responses/error'  
     # Delete an account by account number   
     delete:
       tags:
-        - account
+        - accounts
       summary: Resource that delete account by account number
       description: Delete account by account number
       operationId: deleteAccount
@@ -242,35 +259,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OnSuccessResponse'
+                $ref: '#/components/schemas/GeneralResponse'
         '400':
-          $ref: '#/components/responses/400Error'
+          $ref: '#/components/responses/error'
         '404':
-          $ref: '#/components/responses/404Error'
+          $ref: '#/components/responses/error'
 components:
 ### Parameters ###
   parameters:
-    # user name parameter for login
-    username:
-      name: username
-      in: query
-      description: User name for login
-      required: true
-      schema:
-        type: string
-        minLength: 10
-        example: A45TR67YZ0
-    # Login password
-    password:
-      name: password
-      in: query
-      description: Password needed for login
-      required: true
-      schema:
-        type: string
-        format: password
-        minLength: 10
-        example: #CDfr546#@
     # Account number
     accountNumber:
       name: accountNumber
@@ -291,6 +287,21 @@ components:
         format: int64
 ### Schemas ###
   schemas:
+    # schema - User object
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          description: User name for login
+          minLength: 10
+          example: A45TR67YZ0
+        password:
+          type: string
+          description: Password needed for login
+          format: password
+          minLength: 10
+          example: w#CDfr546#@
     # schema - Customer object
     Customer:
      type: object
@@ -301,7 +312,7 @@ components:
       birthDate:
         type: string
         format: date
-        example: 15/10/1990
+        example: 15-10-1990
       active:
         type: boolean
         example: true
@@ -365,111 +376,45 @@ components:
           type: string
           description: Error type for internal use
           example: An specific error type
-    # schema - On success resource responses for Customer an Account domains
-    # Returns the obhect identifier
-    OnSuccessResponse:
-      description: Response returned when an new object is created
-      allOf:
-        - $ref: '#/components/schemas/GeneralResponse'
-        - type: object
-          properties:
-            objectId:
-              description: New object identifier
-              type: number
-              format: int64
-              example: 18666
-    # schema - Query resource response (Customer)
-    OnQueryCustomerResponse:
-      description: Response returned when a customer is retrieved
-      allOf:
-        - $ref: '#/components/schemas/GeneralResponse'
-        - $ref: '#/components/schemas/Customer'
-    # schema - Query resource response (Account)
-    OnQueryAccountResponse:
-      description: Response returned when an account is retrieved
-      allOf:
-        - $ref: '#/components/schemas/GeneralResponse'
-        - $ref: '#/components/schemas/Account'
-    # schema - Login resource response
-    OnLoginSuccessResponse:
-      description: Response returned when an user is logged in
-      type: object
-      properties:
-        messageCode:
-          type: string
-          example: S102
-        messageDescription:
-          type: string
-          example: Successful Login
-        lastLogin:
-          description: Last login date
-          type: string
-          format: date-time
-          example: 2022-09-21T17:32:28Z
-    # schema - Login error
-    OnLoginErrorResponse:
-      description: Response returned when an error occurred in Login
-      type: object
-      properties:
-        messageCode:
-          type: string
-          example: L107
-        messageDescription:
-          type: string
-          example: Authentication failed. Please check your username and password.
-        errorType:
-          type: string
-          description: Error type for internal use
-          example: Authentication failed. User not found.
 ### Responses ###
   responses:
-    # Successful Login
-    loginSuccess:
-        description:  Successful Login. Valid user and password
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OnLoginSuccessResponse'
-    # Authentication failed
-    authenticationFailed:
-        description: Authentication failed
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OnLoginErrorResponse'
-    # 500 response code
-    5xxError:
-        description: Server error
+    # 5xx && 4xx response code
+    error:
+        description: An error ocurred
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/OnErrorResponse'
-    # 400 response code
-    400Error:
-      description: Invalid input
+    # Customer response (retrieving the whole object)
+    customer:
+      description: Operation was executed successfully
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OnErrorResponse'
-    # 404 response code
-    404Error:
-      description: Not found
+            allOf:
+              - $ref: '#/components/schemas/GeneralResponse'
+              - type: object
+                properties:
+                  objectContent:
+                    description: Customers array
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Customer'
+    # Account response (retrieving the whole object)
+    account:
+      description: Operation was executed successfully
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OnErrorResponse'
-### Links ###
-  links:
-    getCustomerById:
-      description: The retrieved id serves as input for the get resource.
-      operationId: getCustomerById
-      parameters:
-        customerId: '$response.body#/objectId'
-    getAccountByAccountNumber:
-      description: The retrieved id serves as input for the get resource.
-      operationId: getCustomerById
-      parameters:
-        accountNumber: '$response.body#/objectId'
+            allOf:
+              - $ref: '#/components/schemas/GeneralResponse'
+              - type: object
+                properties:
+                  objectContent:
+                    description: Accounts array
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Account'
 ### Security ###
   securitySchemes:
     BasicAuth:
