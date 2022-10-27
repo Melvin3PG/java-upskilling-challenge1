@@ -393,11 +393,11 @@ components:
     AccountObject:
      type: object
      properties:
-      accountNumber:
+      account_number:
        type: integer
        format: int64
        example: 2546132012563
-      accountType:
+      account_type:
        type: string
        description: Account type (two options)
        example: Saving
@@ -408,11 +408,11 @@ components:
        type: number
        format: float
        example: 15300.25
-      overdraftAllowed: 
+      overdraft_allowed:
        type: boolean
        description: Flag to show if account allows overdrafts 
        example: true
-      overdraftAmount: 
+      overdraft_amount:
        type: number
        format: float
        example: 5633.99
@@ -433,7 +433,7 @@ components:
             this response.
           type: string
           example: Something is invalid
-        fieldName:
+        field_name:
           description: Field name in request this notification is related to.
           type: string
         uuid:
