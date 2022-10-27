@@ -25,7 +25,7 @@ tags:
 paths:
 ### Account domain ###
   # Create new account
-  /account: 
+  /accounts: 
     post:
       tags: 
         - Account Domain
@@ -93,7 +93,7 @@ paths:
         '500':
           $ref: '#/components/responses/500InternalServerError'
   # Retreives an account by aacount number
-  /account/{accountId}:
+  /accounts/{accountId}:
     get:
       tags:
         - Account Domain
