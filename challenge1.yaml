@@ -419,14 +419,9 @@ components:
     Notification:
       required:
         - code
-        - uuid
-        - timestamp
+        - message
       type: object
       properties:
-        category:
-          description: Category of this notification as a Http status
-          type: string
-          example: BAD_REQUEST
         code:
           description: Notification code. First character indicates severity (E,W,I).
           type: string
@@ -438,9 +433,6 @@ components:
             this response.
           type: string
           example: Something is invalid
-        description:
-          description: Message which explains the notification.
-          type: string
         fieldName:
           description: Field name in request this notification is related to.
           type: string
