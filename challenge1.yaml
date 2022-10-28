@@ -202,6 +202,332 @@ paths:
           $ref: '#/components/responses/401Unauthorized'
         '500':
           $ref: '#/components/responses/500InternalServerError'
+### Customer domain ###
+  # Create new customer
+  /customers: 
+    post:
+      tags: 
+        - Customer Domain
+      summary: Operation for a new banking customer creation
+      description: Add a new banking customer
+      operationId: createCustomer
+      parameters:
+        #- $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/ChannelId'
+        - $ref: '#/components/parameters/CountryCode'
+        - $ref: '#/components/parameters/ApplicationCode'
+        - $ref: '#/components/parameters/SpanId'
+        - $ref: '#/components/parameters/TraceId'
+        - $ref: '#/components/parameters/UserContext'
+        - $ref: '#/components/parameters/ApiVersion'
+        #- $ref: '#/components/parameters/SubChannelId'
+      requestBody:
+        description: Create a new banking customer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerObject'
+        required: true
+      responses:
+        '201':
+          description: Customer was created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  # Retreives all customer elemnents list
+    get:
+      tags:
+        - Customer Domain
+      summary: Resource that retrieves an customer by customer number
+      description: Find customer by customer number
+      operationId: getAllCustomers
+      parameters:
+        #- $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/ChannelId'
+        - $ref: '#/components/parameters/CountryCode'
+        - $ref: '#/components/parameters/ApplicationCode'
+        - $ref: '#/components/parameters/SpanId'
+        - $ref: '#/components/parameters/TraceId'
+        - $ref: '#/components/parameters/UserContext'
+        - $ref: '#/components/parameters/ApiVersion'
+        #- $ref: '#/components/parameters/SubChannelId'
+      responses:
+        '200':
+          description: Customer was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerListResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  # Retreives an customer by customer id
+  /customers/{customerId}:
+    get:
+      tags:
+        - Customer Domain
+      summary: Resource that retrieves an customer by customer number
+      description: Find customer by customer number
+      operationId: getCustomerByCustomerNumber
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+        #- $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/ChannelId'
+        - $ref: '#/components/parameters/CountryCode'
+        - $ref: '#/components/parameters/ApplicationCode'
+        - $ref: '#/components/parameters/SpanId'
+        - $ref: '#/components/parameters/TraceId'
+        - $ref: '#/components/parameters/UserContext'
+        - $ref: '#/components/parameters/ApiVersion'
+        #- $ref: '#/components/parameters/SubChannelId'
+      responses:
+        '200':
+          description: Customer was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  # Modify an customer
+    put:
+      tags: 
+        - Customer Domain
+      summary: Resource that modifies customer data
+      description: Update customer details
+      operationId: updateCustomer
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerObject'
+        required: true
+      responses:
+        '200':
+          description: Customer was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  # Modify partially an customer
+    patch:
+      tags: 
+        - Customer Domain
+      summary: Resource that modifies partially some attributes of customer data
+      description: Update partial customer details
+      operationId: partialUpdateCustomer
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerObject'
+        required: true
+      responses:
+        '200':
+          description: Customer was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'          
+    # Delete an customer by customer number   
+    delete:
+      tags:
+        - Customer Domain
+      summary: Resource that delete customer by customer number
+      description: Delete customer by customer number
+      operationId: deleteCustomer
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+      responses:
+        '200':
+          description: Customer was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  # Retreives accounts of customer
+  /customers/{customerId}/accounts:
+  # Retreives all account elemnents list
+    get:
+      tags:
+        - Customer Domain
+      summary: Resource that retrieves an account by account number
+      description: Find account by account number
+      operationId: getAllAccountsOfCustomer
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+        #- $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/ChannelId'
+        - $ref: '#/components/parameters/CountryCode'
+        - $ref: '#/components/parameters/ApplicationCode'
+        - $ref: '#/components/parameters/SpanId'
+        - $ref: '#/components/parameters/TraceId'
+        - $ref: '#/components/parameters/UserContext'
+        - $ref: '#/components/parameters/ApiVersion'
+        #- $ref: '#/components/parameters/SubChannelId'
+      responses:
+        '200':
+          description: Account was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountListResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  # Retreives an account by aacount number
+  /customers/{customerId}/accounts/{accountId}:
+    get:
+      tags:
+        - Customer Domain
+      summary: Resource that retrieves an account by account number
+      description: Find account by account number
+      operationId: getAccountByCustomerAndAccountNumber
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+        - $ref: '#/components/parameters/AccountId'
+        #- $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/ChannelId'
+        - $ref: '#/components/parameters/CountryCode'
+        - $ref: '#/components/parameters/ApplicationCode'
+        - $ref: '#/components/parameters/SpanId'
+        - $ref: '#/components/parameters/TraceId'
+        - $ref: '#/components/parameters/UserContext'
+        - $ref: '#/components/parameters/ApiVersion'
+        #- $ref: '#/components/parameters/SubChannelId'
+      responses:
+        '200':
+          description: Account was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  # Modify an account
+    put:
+      tags: 
+        - Customer Domain
+      summary: Resource that modifies account data
+      description: Update account details
+      operationId: updateAccountOfCustomer
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+        - $ref: '#/components/parameters/AccountId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountObject'
+        required: true
+      responses:
+        '200':
+          description: Account was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  # Modify partially an account
+    patch:
+      tags: 
+        - Customer Domain
+      summary: Resource that modifies partially some attributes of account data
+      description: Update partial account details
+      operationId: partialUpdateAccountOfCustomer
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+        - $ref: '#/components/parameters/AccountId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountObject'
+        required: true
+      responses:
+        '200':
+          description: Account was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'          
+    # Delete an account by account number   
+    delete:
+      tags:
+        - Customer Domain
+      summary: Resource that delete account by account number
+      description: Delete account by account number
+      operationId: deleteAccountOfCustomer
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+        - $ref: '#/components/parameters/AccountId'
+      responses:
+        '200':
+          description: Account was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
 components:
   parameters:
     Authorization:
@@ -353,7 +679,7 @@ components:
         type: integer
         format: int64
     # Customer identifier
-    customerId:
+    CustomerId:
       name: customerId
       in: path
       description: Customer identifier
@@ -416,6 +742,56 @@ components:
        type: number
        format: float
        example: 5633.99
+    CustomerDetailResponse:
+      description: Contains a object storarage detail response
+      required:
+        - data
+        - notifications
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/CustomerObject'
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    CustomerListResponse:
+      description: Contains a object storarage detail response
+      required:
+        - data
+        - notifications
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerObject'
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    CustomerObject:
+     type: object
+     properties:
+      customer_id:
+       type: integer
+       format: int64
+       example: 2546132012563
+      customer_type:
+       type: string
+       description: Customer type
+       example: RETAIL
+       enum:
+        - RETAIL
+        - CORPORATE
+      active:
+       type: boolean
+       description: Flag to show if customer is active 
+       example: true
+      at_date:
+       type: boolean
+       description: Flag to show if customer is at date with its debts 
+       example: true
     Notification:
       required:
         - code
