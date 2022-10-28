@@ -857,27 +857,31 @@ components:
           items:
             $ref: '#/components/schemas/Notification'
     CustomerObject:
-     type: object
-     properties:
-      customer_id:
-       type: integer
-       format: int64
-       example: 2546132012563
-      customer_type:
-       type: string
-       description: Customer type
-       example: RETAIL
-       enum:
-        - RETAIL
-        - CORPORATE
-      active:
-       type: boolean
-       description: Flag to show if customer is active 
-       example: true
-      at_date:
-       type: boolean
-       description: Flag to show if customer is at date with its debts 
-       example: true
+      type: object
+      properties:
+        customer_number:
+          type: integer
+          format: int64
+          example: 2546132012563
+        customer_type:
+          type: string
+          description: Customer type
+          example: RETAIL
+          enum:
+            - RETAIL
+            - CORPORATE
+        active:
+          type: boolean
+          description: Flag to show if customer is active 
+          example: true
+        at_date:
+          type: boolean
+          description: Flag to show if customer is at date with its debts 
+          example: true
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountObject'
     Notification:
       required:
         - code
