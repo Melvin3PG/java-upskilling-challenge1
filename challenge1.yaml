@@ -130,7 +130,7 @@ paths:
         '500':
           $ref: '#/components/responses/500InternalServerError'
   # Retreives an account by aacount number
-  /accounts/{accountId}:
+  /accounts/{account-id}:
     get:
       tags:
         - Account Domain
@@ -309,7 +309,7 @@ paths:
         '500':
           $ref: '#/components/responses/500InternalServerError'
   # Retreives an customer by customer id
-  /customers/{customerId}:
+  /customers/{customer-id}:
     get:
       tags:
         - Customer Domain
@@ -419,7 +419,7 @@ paths:
         '500':
           $ref: '#/components/responses/500InternalServerError'
   # Retreives accounts of customer
-  /customers/{customerId}/accounts:
+  /customers/{customer-id}/accounts:
   # Retreives all account elemnents list
     get:
       tags:
@@ -452,7 +452,7 @@ paths:
         '500':
           $ref: '#/components/responses/500InternalServerError'
   # Retreives an account by aacount number
-  /customers/{customerId}/accounts/{accountId}:
+  /customers/{customer-id}/accounts/{accountId}:
     get:
       tags:
         - Customer Domain
@@ -708,7 +708,7 @@ components:
         example: #CDfr546#@
     # Account number
     AccountId:
-      name: accountId
+      name: account-id
       in: path
       description: Account identifier
       required: true
@@ -717,7 +717,7 @@ components:
         format: int64
     # Customer identifier
     CustomerId:
-      name: customerId
+      name: customer-id
       in: path
       description: Customer identifier
       required: true
