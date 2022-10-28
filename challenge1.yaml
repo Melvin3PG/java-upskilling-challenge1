@@ -6,66 +6,9 @@ servers:
 - url: http://webservice_bankingapps.org
   description: web service 
 paths:
-  /login/{loginId}:
-    get:
-      summary: Returns a user by ID.
-      tags:
-        - login
-      parameters:
-      - name: loginId
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Login'
-    put:
-      summary: Update user information
-      tags:
-        - login
-      parameters:
-      - name: loginId
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      requestBody:
-        description: Login data
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Login'
-        required: true
-      responses:
-        "200":
-          description: OK
-    delete:
-      summary: Delete a user by ID.
-      tags:
-        - login
-      parameters:
-      - name: loginId
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-  /login/:
+  /authentication/:
     post:
-      summary: Create a new user
+      summary: Access banking web site
       tags:
         - login
       requestBody:
@@ -78,7 +21,7 @@ paths:
       responses:
         "200":
           description: OK   
-  /login/{accountId}:
+  /account/{accountId}:
     get:
       summary: Returns a account by ID.
       tags:
@@ -282,4 +225,3 @@ components:
       xml:
         name: "Account"        
         
-
