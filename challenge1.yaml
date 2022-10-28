@@ -23,6 +23,43 @@ tags:
     description: Find out more
     url: http://swagger.io
 paths:
+### Security domain ###
+  # Authentication service validation for username and password
+  /authentication/login:
+    post:
+      tags:
+        - Security Domain
+      summary: Authentication service validation for username and password
+      description: Login service with user and password
+      operationId: login
+      parameters:
+        #- $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/ChannelId'
+        - $ref: '#/components/parameters/CountryCode'
+        - $ref: '#/components/parameters/ApplicationCode'
+        - $ref: '#/components/parameters/SpanId'
+        - $ref: '#/components/parameters/TraceId'
+        - $ref: '#/components/parameters/UserContext'
+        - $ref: '#/components/parameters/ApiVersion'
+        #- $ref: '#/components/parameters/SubChannelId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginObject'
+      responses:
+        '200':
+          description:  Successful Authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetailResponse'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
 ### Account domain ###
   # Create new account
   /accounts: 
@@ -688,6 +725,55 @@ components:
         type: integer
         format: int64
   schemas:
+    # Login object
+    LoginObject:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username for login
+          minLength: 10
+          example: mfallas
+        password:
+          type: string
+          description: Password needed for login
+          format: password
+          minLength: 10
+          example: w#CDfr546#@
+    UserObject:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        username:
+          type: string
+          example: mfallas
+        full_name:
+          type: string
+          example: Melvin Fallas C
+        email:
+          type: string
+          example: melvin.fallas@3pillarglobal.com
+        status:
+          type: integer
+          description: User Status
+          format: int32
+          example: 1
+    UserDetailResponse:
+      description: Contains a object storarage detail response
+      required:
+        - data
+        - notifications
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/UserObject'
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
     AccountDetailResponse:
       description: Contains a object storarage detail response
       required:
