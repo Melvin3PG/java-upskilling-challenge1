@@ -92,7 +92,15 @@ paths:
         required: true
       responses:
         "200":
-          description: OK              
+          description: OK      
+  /account/all:
+    get:
+      summary: All accounts.
+      tags:
+        - account
+      responses:
+        '200':
+          $ref: '#/components/responses/account'       
   /customer/{customerId}:
     get:
       summary: Returns a customer by ID.
@@ -223,5 +231,29 @@ components:
           type: "number"
           format: "float"
       xml:
-        name: "Account"        
-        
+        name: "Account"      
+    GeneralResponse:
+      description: General response to be used for other responses
+      type: object
+      properties:
+        messageCode:
+          type: string
+          example: Operation OK
+        messageDescription:
+          type: string
+          example: Message Description    
+  responses:
+    account:
+      description: Operation was executed successfully
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/GeneralResponse'
+              - type: object
+                properties:
+                  objectContent:
+                    description: Accounts array
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Account'
